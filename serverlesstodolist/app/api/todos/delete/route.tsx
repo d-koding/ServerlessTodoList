@@ -12,6 +12,7 @@ export async function DELETE(req: NextRequest) {
     removeTodo(parseInt(id));
     return sendResponse(200, 'DELETE', true, 'Todo deleted');
   } catch (error) {
-    return sendResponse(500, 'DELETE', false, 'Server error');
+    console.error('Error in DELETE /api/todos/delete:', error);
+    return sendResponse(500, 'DELETE', false, `Server error: ${error}`);
   }
 }

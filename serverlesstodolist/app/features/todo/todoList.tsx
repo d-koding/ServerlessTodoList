@@ -1,53 +1,48 @@
 'use client';
 import { useEffect, useState } from 'react';
 import type { Todo } from '@/lib/types/todo';
+import { fetchTodos } from '@/lib/utils/fetchTodos';
+import { addTodo } from '@/lib/utils/addTodo';
+import { removeTodo } from '@/lib/utils/removeTodo';
 
 export default function TodoList() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [text, setText] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      const res = await fetch('/api/todos');
-      const data = await res.json();
-      setTodos(data.data);
-    };
-    fetchTodos();
+    fetchTodos(setTodos);
   }, []);
 
-  const addTodo = async () => {
-    if (!text.trim()) return;
-
-    const res = await fetch('/api/todos/post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
-    const data = await res.json();
-    if (data.success) setTodos([...todos, data.data]);
-    setText('');
-  };
-
-  const removeTodo = async (id: number) => {
-    const res = await fetch('/api/todos/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    const data = await res.json();
-    if (data.success) setTodos(todos.filter((todo) => todo.id !== id));
-  };
-
   return (
-    <div>
-      <h1>Todo List</h1>
-      <input value={text} onChange={(e) => setText(e.target.value)} />
-      <button onClick={addTodo}>Add</button>
-      <ul>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">Dylan's Serverless Todo List</h1>
+      {loading && <p className="text-gray-500">Loading...</p>}
+      <div className="flex gap-2 mb-4">
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={loading}
+          className="input input-bordered w-full max-w-xs"
+          placeholder="Add a todo"
+        />
+        <button
+          onClick={() => addTodo(text, setTodos, setText, setLoading)}
+          disabled={loading}
+          className="btn btn-primary">
+          Add
+        </button>
+      </div>
+      <ul className="space-y-2">
         {todos.map((todo) => (
-          <li key={todo.id}>
-            {todo.text}
-            <button onClick={() => removeTodo(todo.id)}>Complete</button>
+          <li key={todo.id} className="flex justify-between items-center p-2 bg-base-200 rounded">
+            <span>{todo.text}</span>
+            <button
+              onClick={() => removeTodo(todo.id, setTodos, setLoading)}
+              disabled={loading}
+              className="btn btn-error btn-sm">
+              Delete
+            </button>
           </li>
         ))}
       </ul>
