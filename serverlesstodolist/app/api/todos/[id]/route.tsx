@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { sendResponse, sendError } from '@/lib/utils/response';
 import { updateTodo } from '@/lib/services/todoStore';
 
