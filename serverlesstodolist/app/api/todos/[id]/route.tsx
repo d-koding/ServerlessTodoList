@@ -2,10 +2,13 @@ import { NextRequest } from 'next/server';
 import { sendResponse, sendError } from '@/lib/utils/response';
 import { updateTodo } from '@/lib/services/todoStore';
 
-export async function PATCH(
-  req: NextRequest,
-  context: { params: { id: string } } 
-) {
+interface RouteContext {
+  params: {
+    id: string;
+  };
+}
+
+export async function PATCH(req: NextRequest, context: RouteContext) {
   try {
     const { id } = context.params;
     const { text, completed } = await req.json();
@@ -15,7 +18,7 @@ export async function PATCH(
       return sendError('Invalid input', 'ID must be a valid number', 400);
     }
 
-    const updatedTodo = updateTodo(todoId, { text, completed });
+    const updatedTodo = await updateTodo(todoId, { text, completed });
     if (!updatedTodo) {
       return sendError('Not found', `Todo with ID ${id} not found`, 404);
     }
