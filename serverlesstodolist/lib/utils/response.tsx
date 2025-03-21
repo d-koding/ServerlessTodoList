@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
+import { Todo } from '@/lib/types/todo'; // Adjust path
 
-export function sendResponse(data: any) {
+export function sendResponse(data: Todo | Todo[] | null) {
   return NextResponse.json({ success: true, data }, { status: 200 });
 }
 
-export function sendError(error: string, details?: string, status: number = 500) {
-  return NextResponse.json({ error, details }, { status });
+export function sendError(message: string, error: string, status: number) {
+  return NextResponse.json({ success: false, message, error }, { status });
 }

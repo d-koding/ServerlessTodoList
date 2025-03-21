@@ -6,13 +6,18 @@ export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
+
     if (!id || isNaN(parseInt(id))) {
-      return sendError('400');
+      return sendError('Invalid input', 'ID must be a valid number', 400);
     }
-    removeTodo(parseInt(id));
-    return sendResponse(200);
+
+    const todoId = parseInt(id);
+    await removeTodo(todoId);
+
+    return sendResponse(null);
   } catch (error) {
     console.error('Error in DELETE /api/todos/delete:', error);
-    return sendError('500');
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return sendError('Failed to delete todo', errorMessage, 500);
   }
 }

@@ -16,7 +16,7 @@ export default function TodoList() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Dylan's Serverless Todo List</h1>
+      <h1 className="text-3xl font-bold mb-4">Serverless Todo List</h1>
       {loading && <p className="text-gray-500">Loading...</p>}
       <div className="flex gap-2 mb-4">
         <input
