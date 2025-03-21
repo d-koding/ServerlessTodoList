@@ -1,4 +1,3 @@
-'use client';
 import { Dispatch, SetStateAction } from 'react';
 import type { Todo } from '@/lib/types/todo';
 
@@ -17,10 +16,15 @@ export async function addTodo(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text }),
   });
+
   const data = await res.json();
+  console.log('Response:', data);
+  
   if (data.success) {
     setTodos((prevTodos) => [...prevTodos, data.data]);
     setText('');
+  } else {
+    console.error('Failed to add todo:', data);
   }
 
   setLoading(false);

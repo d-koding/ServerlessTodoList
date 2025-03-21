@@ -1,4 +1,3 @@
-'use client';
 import { Dispatch, SetStateAction } from 'react';
 import type { Todo } from '@/lib/types/todo';
 

@@ -1,23 +1,21 @@
 import { NextRequest } from 'next/server';
 import { sendResponse } from '@/lib/utils/response';
 import { updateTodo } from '@/lib/services/todoStore';
+import { sendError } from '@/lib/utils/response';
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = params.id;
     const { text, completed } = await req.json();
 
-    if (isNaN(parseInt(id))) {
-      return sendResponse(400, 'PATCH', false, 'Invalid ID format');
-    }
-
     const updatedTodo = updateTodo(parseInt(id), { text, completed });
     if (!updatedTodo) {
-      return sendResponse(404, 'PATCH', false, 'Todo not found');
+      return sendError('Not found', `Todo with ID ${id} not found`, 404);
     }
 
-    return sendResponse(200, 'PATCH', true, 'Todo updated', updatedTodo);
+    return sendResponse(updatedTodo);
   } catch (error) {
-    return sendResponse(500, 'PATCH', false, 'Server error');
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return sendError('Failed to update todo', errorMessage, 500);
   }
 }

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { sendResponse } from '@/lib/utils/response';
+import { sendResponse, sendError } from '@/lib/utils/response';
 import { removeTodo } from '@/lib/services/todoStore';
 
 export async function DELETE(req: NextRequest) {
@@ -7,12 +7,12 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     if (!id || isNaN(parseInt(id))) {
-      return sendResponse(400, 'DELETE', false, 'Invalid or missing ID');
+      return sendError('400');
     }
     removeTodo(parseInt(id));
-    return sendResponse(200, 'DELETE', true, 'Todo deleted');
+    return sendResponse(200);
   } catch (error) {
     console.error('Error in DELETE /api/todos/delete:', error);
-    return sendResponse(500, 'DELETE', false, `Server error: ${error}`);
+    return sendError('500');
   }
 }
